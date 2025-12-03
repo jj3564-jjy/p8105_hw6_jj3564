@@ -107,3 +107,4 @@ theme(
     axis.text.y = element_text(size = 6)
 )
 ```
+####comment Most estimated odds ratios cluster around 1, and many confidence intervals are wide and cross the reference line, suggesting that in many cities there is no strong evidence of a difference in clearance rates between male and female victims.    A smaller subset of cities shows ORs noticeably above 1, indicating higher odds of case resolution for male victims, although again several of these estimates have considerable uncertainty due to limited sample size.
