@@ -1,0 +1,249 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={hw6},
+  pdfauthor={Kate},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{hw6}
+\author{Kate}
+\date{2025-12-03}
+
+\begin{document}
+\maketitle
+
+\subsection{Problem 1}\label{problem-1}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Import homicide data from Washington Post GitHub}
+\NormalTok{homicide\_raw }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(}
+  \StringTok{"https://raw.githubusercontent.com/washingtonpost/data{-}homicides/master/homicide{-}data.csv"}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Rows: 52179 Columns: 12
+## -- Column specification --------------------------------------------------------
+## Delimiter: ","
+## chr (9): uid, victim_last, victim_first, victim_race, victim_age, victim_sex...
+## dbl (3): reported_date, lat, lon
+## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# indicator identification and split data}
+\NormalTok{homicide\_clean }\OtherTok{\textless{}{-}}\NormalTok{ homicide\_raw }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{city\_state =} \FunctionTok{str\_c}\NormalTok{(city, }\StringTok{", "}\NormalTok{, state),}
+    \AttributeTok{solved =}\NormalTok{ disposition }\SpecialCharTok{==} \StringTok{"Closed by arrest"}
+\NormalTok{  )}\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(}
+    \SpecialCharTok{!}\NormalTok{city\_state }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"Dallas, TX"}\NormalTok{, }\StringTok{"Phoenix, AZ"}\NormalTok{, }
+                      \StringTok{"Kansas City, MO"}\NormalTok{, }\StringTok{"Tulsa, AL"}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(victim\_race }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"White"}\NormalTok{, }\StringTok{"Black"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{victim\_age =} \FunctionTok{as.numeric}\NormalTok{(victim\_age),}
+    \AttributeTok{victim\_sex =} \FunctionTok{factor}\NormalTok{(victim\_sex),}
+    \AttributeTok{victim\_race =} \FunctionTok{factor}\NormalTok{(victim\_race)}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Logistic Regression for one
+city}\label{logistic-regression-for-one-city}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{logistic\_df }\OtherTok{\textless{}{-}}\NormalTok{ homicide\_clean }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(city\_state }\SpecialCharTok{==} \StringTok{"Baltimore, MD"}\NormalTok{)}
+
+\NormalTok{logistic\_fit }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(}
+\NormalTok{  solved }\SpecialCharTok{\textasciitilde{}}\NormalTok{ victim\_age }\SpecialCharTok{+}\NormalTok{ victim\_sex }\SpecialCharTok{+}\NormalTok{ victim\_race,}
+  \AttributeTok{data =}\NormalTok{ logistic\_df,}
+  \AttributeTok{family =} \FunctionTok{binomial}\NormalTok{()}
+\NormalTok{)}
+
+\NormalTok{logistic\_OR }\OtherTok{\textless{}{-}}\NormalTok{ logistic\_fit }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{tidy}\NormalTok{(}\AttributeTok{conf.int =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{exponentiate =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(term }\SpecialCharTok{==} \StringTok{"victim\_sexMale"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(term, estimate, conf.low, conf.high)}
+
+\NormalTok{logistic\_OR}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 1 x 4
+##   term           estimate conf.low conf.high
+##   <chr>             <dbl>    <dbl>     <dbl>
+## 1 victim_sexMale    0.426    0.324     0.558
+\end{verbatim}
+
+\subsubsection{Logistic Regression for Each
+City}\label{logistic-regression-for-each-city}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{city\_ORs }\OtherTok{\textless{}{-}}\NormalTok{ homicide\_clean }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(city\_state) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{nest}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{fit =} \FunctionTok{map}\NormalTok{(}
+\NormalTok{      data,}
+      \SpecialCharTok{\textasciitilde{}} \FunctionTok{glm}\NormalTok{(solved }\SpecialCharTok{\textasciitilde{}}\NormalTok{ victim\_age }\SpecialCharTok{+}\NormalTok{ victim\_sex }\SpecialCharTok{+}\NormalTok{ victim\_race,}
+            \AttributeTok{data =}\NormalTok{ .x,}
+            \AttributeTok{family =} \FunctionTok{binomial}\NormalTok{())}
+\NormalTok{    ),}
+    \AttributeTok{tidied =} \FunctionTok{map}\NormalTok{(}
+\NormalTok{      fit,}
+      \SpecialCharTok{\textasciitilde{}} \FunctionTok{tidy}\NormalTok{(.x, }\AttributeTok{conf.int =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{exponentiate =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{    )}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{unnest}\NormalTok{(tidied) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(term }\SpecialCharTok{==} \StringTok{"victim\_sexMale"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(city\_state, estimate, conf.low, conf.high)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: There were 43 warnings in `mutate()`.
+## The first warning was:
+## i In argument: `tidied = map(fit, ~tidy(.x, conf.int = TRUE, exponentiate =
+##   TRUE))`.
+## i In group 1: `city_state = "Albuquerque, NM"`.
+## Caused by warning:
+## ! glm.fit: fitted probabilities numerically 0 or 1 occurred
+## i Run `dplyr::last_dplyr_warnings()` to see the 42 remaining warnings.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{city\_ORs}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 47 x 4
+## # Groups:   city_state [47]
+##    city_state      estimate conf.low conf.high
+##    <chr>              <dbl>    <dbl>     <dbl>
+##  1 Albuquerque, NM    1.77     0.825     3.76 
+##  2 Atlanta, GA        1.00     0.680     1.46 
+##  3 Baltimore, MD      0.426    0.324     0.558
+##  4 Baton Rouge, LA    0.381    0.204     0.684
+##  5 Birmingham, AL     0.870    0.571     1.31 
+##  6 Boston, MA         0.674    0.353     1.28 
+##  7 Buffalo, NY        0.521    0.288     0.936
+##  8 Charlotte, NC      0.884    0.551     1.39 
+##  9 Chicago, IL        0.410    0.336     0.501
+## 10 Cincinnati, OH     0.400    0.231     0.667
+## # i 37 more rows
+\end{verbatim}
+
+\end{document}
