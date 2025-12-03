@@ -108,3 +108,107 @@ theme(
 )
 ```
 ####comment Most estimated odds ratios cluster around 1, and many confidence intervals are wide and cross the reference line, suggesting that in many cities there is no strong evidence of a difference in clearance rates between male and female victims.    A smaller subset of cities shows ORs noticeably above 1, indicating higher odds of case resolution for male victims, although again several of these estimates have considerable uncertainty due to limited sample size.
+
+### problem 2
+
+```{r}
+data("weather_df")
+
+
+# 1. Clean data
+
+
+weather_clean <- weather_df %>%
+  drop_na(tmax, tmin, prcp)  
+
+
+# 2. Create 5000 bootstrap resamples
+
+
+weather_bootstrap <- weather_clean %>%
+  bootstrap(n = 5000, id = "bootstrap_id")
+
+
+# 3. Fit models on each bootstrap sample
+
+
+bootstrap_results <- weather_bootstrap %>%
+  mutate(
+    fit_model   = map(strap, ~ lm(tmax ~ tmin + prcp, data = .x)),
+    model_glance = map(fit_model, glance),
+    model_tidy   = map(fit_model, tidy)
+  )
+
+
+# 4. Extract R-squared values
+
+
+bootstrap_r2 <- bootstrap_results %>%
+  unnest(model_glance) %>%
+  select(bootstrap_id, r.squared)
+
+
+# 5. Extract coefficients and compute beta1/beta2 ratio
+
+
+bootstrap_coef_ratio <- bootstrap_results %>%
+  unnest(model_tidy) %>%
+  filter(term %in% c("tmin", "prcp")) %>%
+  select(bootstrap_id, term, estimate) %>%
+  pivot_wider(names_from = term, values_from = estimate) %>%
+  mutate(coef_ratio_tmin_prcp = tmin / prcp) %>%
+  select(bootstrap_id, coef_ratio_tmin_prcp)
+
+
+# 6. Merge the results
+
+
+bootstrap_summary <- bootstrap_r2 %>%
+  inner_join(bootstrap_coef_ratio, by = "bootstrap_id")
+
+bootstrap_summary
+```
+```{r}
+# R-squared distribution
+ggplot(bootstrap_summary, aes(x = r.squared)) +
+  geom_histogram(bins = 40, fill = "#0057A8", alpha = 0.7) +
+  labs(
+    title = "Bootstrap distribution of R-squared",
+    x = expression(hat(r)^2),
+    y = "Count"
+  ) +
+  theme_minimal()
+
+# beta1 / beta2 distribution
+ggplot(bootstrap_summary, aes(x = coef_ratio_tmin_prcp)) +
+  geom_histogram(bins = 40, fill = "#E53935", alpha = 0.7) +
+  labs(
+    title = "Bootstrap distribution of beta1 / beta2",
+    x = expression(hat(beta)[1] / hat(beta)[2]),
+    y = "Count"
+  ) +
+  theme_minimal()
+
+```
+comments:
+The bootstrap distribution of r squared shows that the model fits very consistently well, with minimal sampling variability. Across the 5000 bootstrap samples, the model explains roughly 94.2% of the variance in tmax, and this estimate remains extremely stable even when the model is repeatedly refit on resampled datasets. The tight, symmetric distribution indicates that the explanatory power of the model is highly robust and does not depend strongly on any particular subset of observations.
+In contrast, the bootstrap distribution of the coefficient ratio 𝛽1/β2
+ is far less stable. The ratio is consistently negative, reflecting that the two coefficients almost always have opposite signs, but the distribution is noticeably wide and skewed. This suggests substantial variability in the relative strength of the two predictors. The large spread in the ratio is likely driven by the fact that 
+β2(the precipitation coefficient) can be small in magnitude in many bootstrap samples, which produces instability when taking the ratio. Overall, estimating the comparative influence of tmin and prcp is much less stable than estimating the model’s overall goodness-of-fit.
+```{r}
+# 95% bootstrap intervals
+r2_ci <- bootstrap_summary %>%
+  summarise(
+    q2.5  = quantile(r.squared, 0.025),
+    q97.5 = quantile(r.squared, 0.975)
+  )
+
+ratio_ci <- bootstrap_summary %>%
+  summarise(
+    q2.5  = quantile(coef_ratio_tmin_prcp, 0.025),
+    q97.5 = quantile(coef_ratio_tmin_prcp, 0.975)
+  )
+
+r2_ci
+ratio_ci
+```
