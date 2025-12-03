@@ -212,3 +212,159 @@ ratio_ci <- bootstrap_summary %>%
 r2_ci
 ratio_ci
 ```
+
+
+###problem3
+```{r}
+#data cleaning
+birth_raw <- read_csv("./data/birthweight.csv")
+
+birth_df <- birth_raw %>%
+  mutate(
+    babysex = factor(babysex, levels = c(1, 2),
+                     labels = c("male", "female")),
+    frace   = factor(frace),
+    mrace   = factor(mrace),
+    malform = factor(malform, levels = c(0, 1),
+                     labels = c("absent", "present"))
+  ) %>% 
+  drop_na()
+```
+```{r}
+mod_main2 <- lm(
+  bwt ~ bhead + blength * babysex + gaweeks +
+    ppbmi + wtgain + smoken,
+  data = birth_df
+)
+
+summary(mod_main2)
+```
+
+```{r}
+# model choice
+mod_main2 <- lm(
+  bwt ~ bhead + blength * babysex + gaweeks +
+    ppbmi + wtgain + smoken,
+  data = birth_df
+)
+
+summary(mod_main2)
+
+```
+I choose model for these reasons
+a.Maternal characteristics that influence intrauterine growth—such as pre-pregnancy BMI (ppbmi), pregnancy weight gain (wtgain), smoking during pregnancy (smoken), and gestational age (gaweeks)—are included because they directly affect fetal development and nutritional environment.
+b.Measures of fetal size at birth, including head circumference (bhead) and length (blength), capture the newborn’s physical growth. 
+3.In addition,I incorporate an interaction between birth length and sex (babysex * blength) to allow for the possibility that sex-specific differences in birthweight are expressed partially through differences in skeletal growth.
+
+```{r}
+
+birth_aug2 <- birth_df %>%
+  add_predictions(mod_main2) %>%
+  add_residuals(mod_main2)
+
+birth_aug2 %>%
+  ggplot(aes(x = pred, y = resid)) +
+  geom_point(alpha = 0.4) +
+  geom_hline(yintercept = 0, linetype = 2) +
+  labs(
+    title = "Residuals vs fitted values: Main Model ",
+    x = "Fitted birthweight",
+    y = "Residuals"
+  )
+```
+from residuals, we can easily they the distribution center is around 0 and it is looked a random one.and to get more information, we can use more plots in R
+```{r}
+plot(mod_main2)
+```
+from qq and residuls graph, we cam generally support normal distribution for unbiased prediction. But two points to be careful ,from QQ we can see some ourliners which may cause problem and also for variance, it has a probablity to consider about heteroscedasticity
+```{r}
+# replicate camparision model
+mod1 <- lm(bwt ~ blength + gaweeks, data = birth_df)
+
+mod2 <- lm(
+  bwt ~ bhead * blength * babysex,
+  data = birth_df
+)
+```
+
+```{r}
+cv_df <- crossv_mc(birth_df, n = 100)
+
+cv_results2 <- cv_df %>%
+  mutate(
+    train = map(train, as_tibble),
+    test  = map(test, as_tibble),
+
+    # fit all 3 models
+    fit_main2 = map(train, ~ lm(
+      bwt ~ bhead + blength * babysex + gaweeks +
+        ppbmi + wtgain + smoken,
+      data = .x
+    )),
+    fit_mod1 = map(train, ~ lm(
+      bwt ~ blength + gaweeks,
+      data = .x
+    )),
+    fit_mod2 = map(train, ~ lm(
+      bwt ~ bhead * blength * babysex,
+      data = .x
+    )),
+
+    # RMSE computations
+    rmse_main2 = map2_dbl(fit_main2, test, ~ {
+      pred <- predict(.x, newdata = .y)
+      sqrt(mean((.y$bwt - pred)^2))
+    }),
+    rmse_mod1 = map2_dbl(fit_mod1, test, ~ {
+      pred <- predict(.x, newdata = .y)
+      sqrt(mean((.y$bwt - pred)^2))
+    }),
+    rmse_mod2 = map2_dbl(fit_mod2, test, ~ {
+      pred <- predict(.x, newdata = .y)
+      sqrt(mean((.y$bwt - pred)^2))
+    })
+  )
+
+
+cv_long2 <- cv_results2 %>%
+  select(rmse_main2, rmse_mod1, rmse_mod2) %>%
+  pivot_longer(
+    everything(),
+    names_to = "model",
+    values_to = "rmse"
+  ) %>%
+  mutate(
+    model = recode(
+      model,
+      rmse_main2 = "Main Model 2.0",
+      rmse_mod1  = "Model 1",
+      rmse_mod2  = "Model 2"
+    )
+  )
+
+cv_long2 %>%
+  group_by(model) %>%
+  summarise(
+    mean_rmse = mean(rmse),
+    sd_rmse   = sd(rmse),
+    .groups = "drop"
+  )
+```
+The cross-validated RMSE results indicate that Main Model 2.0 performs the best overall. It has the lowest mean RMSE (≈283 grams) and the smallest standard deviation, suggesting that it not only predicts birthweight more accurately but also produces stable predictions across the 100 random train–test splits.yeah!
+```{r}
+cv_long2 %>%
+  ggplot(aes(x = model, y = rmse, fill = model)) +
+  geom_violin(alpha = 0.6) +
+  geom_boxplot(width = 0.1, outlier.size = 0.8, alpha = 0.8) +
+  labs(
+    title = "RMSE distribution by model (Violin + Boxplot)",
+    x = NULL,
+    y = "RMSE (test set)"
+  ) +
+  coord_flip() +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+In this plot, Main Model 2.0 shows the lowest and most concentrated RMSE distribution
+
+Model 2 has a slightly higher and somewhat broader distribution, showing moderately worse accuracy and stability. Model 1, by contrast, has the widest and most right-shifted violin, with noticeably higher RMSE values and larger spread. This indicates substantial information loss when only length and gestational age are used as predictors.
